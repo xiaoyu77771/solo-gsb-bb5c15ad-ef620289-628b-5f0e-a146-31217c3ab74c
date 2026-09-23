@@ -1,0 +1,7 @@
+fastapi>=0.115,<1.0
+uvicorn[standard]>=0.30,<1.0
+SQLAlchemy>=2.0,<2.1
+pydantic>=2.7,<3.0
+pydantic-settings>=2.3,<3.0
+# 若使用 PostgreSQL（可选）：取消下面注释，或在镜像内自行安装
+# psycopg[binary]>=3.2,<4.0

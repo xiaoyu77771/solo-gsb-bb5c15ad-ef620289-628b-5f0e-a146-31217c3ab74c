@@ -1,0 +1,28 @@
+services:
+  api:
+    build: .
+    image: coldchain-events-api:latest
+    container_name: coldchain-events-api
+    restart: unless-stopped
+    ports:
+      - "${COLDCHAIN_PORT:-8000}:8000"
+    environment:
+      # 默认使用挂载卷中的 SQLite 文件，开箱即用
+      COLDCHAIN_DATABASE_URL: "sqlite:////data/coldchain.db"
+      COLDCHAIN_HOST: "0.0.0.0"
+      COLDCHAIN_PORT: "8000"
+      COLDCHAIN_MIN_TEMPERATURE: "-60"
+      COLDCHAIN_MAX_TEMPERATURE: "85"
+      # 如需 PostgreSQL，可改为（需自行在 requirements.txt 启用 psycopg）：
+      # COLDCHAIN_DATABASE_URL: "postgresql+psycopg://coldchain:coldchain@db:5432/coldchain"
+    volumes:
+      - coldchain-data:/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/health').status==200 else 1)"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+
+volumes:
+  coldchain-data:
